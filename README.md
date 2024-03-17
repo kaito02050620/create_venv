@@ -8,8 +8,22 @@
 <img src="https://img.shields.io/badge/-shell%20script-fdfdfdfdf.svg?logo=&style=for-the-badge">
 
 ### 環境構築できるフレームワーク！
+- django Rest framework
+- fastapi
+
 ### 使い方！
 #### 前提条件
-#### 使い方
-インストールコマンドは `gem install hoge` です
+pythonがインストールされている事！
 
+#### 使い方
+1. setup.shが実行できるディレクトリで `sh ./setup.sh <仮想環境名> <プロジェクト名> <アプリ名>` です。
+2. 使用するフレームワークの番号を入力します。3番を選択するとvenvの環境構築とactivateまで行います。
+3. サーバ立ち上げる場合は`1`、不要なら`2`を入力します。
+
+#### 今後のアップデート
+- 各フレームワークにテンプレートコード書き込み。
+- フレームワーク追加。
+- fastapiの場合にはAPIドキュメントを自動で開く。
+- ユーザビリティ工場
+
+※あくまで個人で使用するツールで～～す。😎
