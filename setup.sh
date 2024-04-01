@@ -24,35 +24,30 @@ select  server_start_flag in "YES" "NO"; do
 done
 
 echo "--- $framework setup start ---"
-echo "virtual_env creating..."
-mkdir -p "created/$1"
-cd "created/$1" || exit
+mkdir -p "created/$1" && cd "created/$1" || exit
 python -m venv venv
-mkdir "$2"
-cd "../../"
-echo "virtual_env created!"
+mkdir "$2" && cd "../../"
 
-echo "start venv..."
 source ./created/$1/venv/Scripts/activate
 
 if [ "$framework" = "django" ]; then
     cd ./created/"$1"/"$2" || exit
-    pip install django
-    pip install djangorestframework
+    pip install django djangorestframework
     django-admin startproject config .
     python manage.py startapp "$3"
 
-    if [ "$server_start_flag" = "YES" ]; then
-        python manage.py runserver
-    fi
-
 elif [ "$framework" = "fastapi" ]; then
     cd ./created/"$1"/"$2" || exit
-    pip install fastapi
-    pip install "uvicorn[standard]"
+    pip install fastapi "uvicorn[standard]"
     touch main.py
+fi
 
-    if [ "$server_start_flag" = "YES" ]; then
+if [ "$server_start_flag" = "YES" ]; then
+
+    if [ "$framework" = "django" ]; then
+        python manage.py runserver
+
+    elif [ "$framework" = "fastapi" ]; then
         uvicorn main:app --reload
     fi
 fi
