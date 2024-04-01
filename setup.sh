@@ -12,31 +12,15 @@ fi
 
 echo ""
 echo "----- SELECT FRAMEWORK -----"
+
 select framework in "fastapi" "django" "no_framework"; do
-    case $framework in
-        fastapi)
-            break
-            ;;
-        django)
-            break
-            ;;
-        no_framework)
-            break
-            ;;
-    esac
+    [ -n "$framework" ] && break
 done
 
 echo ""
 echo "----- SERVER START ? -----"
-select server_start_flag in "YES" "NO"; do
-    case $server_start_flag in
-        YES)
-            break
-            ;;
-        NO)
-            break
-            ;;
-    esac
+select  server_start_flag in "YES" "NO"; do
+    [ -n "$server_start_flag" ] && break
 done
 
 echo "--- $framework setup start ---"
@@ -49,30 +33,28 @@ cd "../../"
 echo "virtual_env created!"
 
 echo "start venv..."
-exec $SHELL --rcfile /dev/fd/3 3<<EOS
-    source ./created/$1/venv/Scripts/activate
-    
-    if [ $framework = "django" ]; then
-        cd ./created/$1/$2
-        pip install django
-        pip install djangorestframework
-        django-admin startproject config .
-        python manage.py startapp $3
+source ./created/$1/venv/Scripts/activate
 
-        if [ $server_start_flag = "YES" ]; then
-            python manage.py runserver
-        fi
+if [ "$framework" = "django" ]; then
+    cd ./created/"$1"/"$2" || exit
+    pip install django
+    pip install djangorestframework
+    django-admin startproject config .
+    python manage.py startapp "$3"
 
-    elif [ $framework = "fastapi" ]; then
-        cd "./created/$1/$2"
-        pip install fastapi
-        pip install "uvicorn[standard]"
-        touch main.py
-
-        if [ $server_start_flag = "YES" ]; then
-            uvicorn main:app --reload
-        fi
+    if [ "$server_start_flag" = "YES" ]; then
+        python manage.py runserver
     fi
 
-    echo "--- $1 setup successful ---"
-EOS
+elif [ "$framework" = "fastapi" ]; then
+    cd ./created/"$1"/"$2" || exit
+    pip install fastapi
+    pip install "uvicorn[standard]"
+    touch main.py
+
+    if [ "$server_start_flag" = "YES" ]; then
+        uvicorn main:app --reload
+    fi
+fi
+
+echo "--- $1 setup successful ---"
